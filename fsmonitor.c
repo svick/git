@@ -162,7 +162,7 @@ void process_fsmonitor_extension(struct index_state *istate)
 
 void refresh_by_fsmonitor(struct index_state *istate)
 {
-	static int has_run_once = FALSE;
+	static int has_run_once;
 	struct strbuf query_result = STRBUF_INIT;
 	int query_success = 0;
 	size_t bol = 0; /* beginning of line */
@@ -172,7 +172,7 @@ void refresh_by_fsmonitor(struct index_state *istate)
 
 	if (!core_fsmonitor || has_run_once)
 		return;
-	has_run_once = TRUE;
+	has_run_once = 1;
 
 	/*
 	 * This could be racy so save the date/time now and the hook
