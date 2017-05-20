@@ -450,7 +450,7 @@ processed by rebase.
 
 [[query-fsmonitor]]
 query-fsmonitor
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 This hook is invoked when the configuration option core.fsmonitor is
 set and git needs to identify changed or untracked files.  It takes
