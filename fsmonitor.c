@@ -162,7 +162,7 @@ void process_fsmonitor_extension(struct index_state *istate)
 
 void refresh_by_fsmonitor(struct index_state *istate)
 {
-	static has_run_once = FALSE;
+	static int has_run_once = FALSE;
 	struct strbuf query_result = STRBUF_INIT;
 	int query_success = 0;
 	size_t bol = 0; /* beginning of line */
