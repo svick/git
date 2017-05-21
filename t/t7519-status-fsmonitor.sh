@@ -7,7 +7,7 @@ test_description='git status with file system watcher'
 clean_repo () {
 	git reset --hard HEAD
 	git clean -fd
-	rm marker -f
+	rm -f marker
 }
 
 dirty_repo () {
