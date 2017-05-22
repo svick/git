@@ -1013,9 +1013,7 @@ static int update_clone(int argc, const char **argv, const char *prefix)
 	if (pathspec.nr)
 		suc.warn_if_uninitialized = 1;
 
-	/* Overlay the parsed .gitmodules file with .git/config */
-	gitmodules_config();
-	git_config(submodule_config, NULL);
+	load_submodule_config();
 
 	if (max_jobs < 0)
 		max_jobs = parallel_submodules();
@@ -1057,9 +1055,8 @@ static int resolve_relative_path(int argc, const char **argv, const char *prefix
 static const char *remote_submodule_branch(const char *path)
 {
 	const struct submodule *sub;
-	gitmodules_config();
-	git_config(submodule_config, NULL);
 
+	load_submodule_config();
 	sub = submodule_from_path(null_sha1, path);
 	if (!sub)
 		return NULL;
@@ -1129,8 +1126,7 @@ static int absorb_git_dirs(int argc, const char **argv, const char *prefix)
 	argc = parse_options(argc, argv, prefix, embed_gitdir_options,
 			     git_submodule_helper_usage, 0);
 
-	gitmodules_config();
-	git_config(submodule_config, NULL);
+	load_submodule_config();
 
 	if (module_list_compute(argc, argv, prefix, &pathspec, &list) < 0)
 		return 1;

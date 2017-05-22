@@ -320,8 +320,7 @@ int cmd_reset(int argc, const char **argv, const char *prefix)
 	parse_args(&pathspec, argv, prefix, patch_mode, &rev);
 
 	if (recurse_submodules != RECURSE_SUBMODULES_DEFAULT) {
-		gitmodules_config();
-		git_config(submodule_config, NULL);
+		load_submodule_config();
 		set_config_update_recurse_submodules(RECURSE_SUBMODULES_ON);
 	}
 

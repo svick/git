@@ -1343,8 +1343,7 @@ int cmd_fetch(int argc, const char **argv, const char *prefix)
 			int arg = parse_fetch_recurse_submodules_arg("--recurse-submodules-default", recurse_submodules_default);
 			set_config_fetch_recurse_submodules(arg);
 		}
-		gitmodules_config();
-		git_config(submodule_config, NULL);
+		load_submodule_config();
 	}
 
 	if (all) {
