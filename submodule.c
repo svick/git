@@ -94,6 +94,7 @@ static int submodule_config(const char *var, const char *value, void *cb)
 	if (!strcmp(var, "submodule.recurse")) {
 		int v = git_config_bool(var, value) ?
 			RECURSE_SUBMODULES_ON : RECURSE_SUBMODULES_OFF;
+		config_fetch_recurse_submodules = v;
 		config_update_recurse_submodules = v;
 	} else if (!strcmp(var, "submodule.fetchjobs")) {
 		submodule_config_reading = SUBMODULE_CONFIG_EXISTS;
