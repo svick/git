@@ -91,7 +91,11 @@ int update_path_in_gitmodules(const char *oldpath, const char *newpath)
 
 static int submodule_config(const char *var, const char *value, void *cb)
 {
-	if (!strcmp(var, "submodule.fetchjobs")) {
+	if (!strcmp(var, "submodule.recurse")) {
+		int v = git_config_bool(var, value) ?
+			RECURSE_SUBMODULES_ON : RECURSE_SUBMODULES_OFF;
+		config_update_recurse_submodules = v;
+	} else if (!strcmp(var, "submodule.fetchjobs")) {
 		submodule_config_reading = SUBMODULE_CONFIG_EXISTS;
 		parallel_jobs = git_config_int(var, value);
 		if (parallel_jobs < 0)

@@ -1194,7 +1194,7 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 	opts.prefix = prefix;
 	opts.show_progress = -1;
 
-	gitmodules_config();
+	load_submodule_config();
 	git_config(git_checkout_config, &opts);
 
 	opts.track = BRANCH_TRACK_UNSPECIFIED;
@@ -1214,11 +1214,8 @@ int cmd_checkout(int argc, const char **argv, const char *prefix)
 		git_xmerge_config("merge.conflictstyle", conflict_style, NULL);
 	}
 
-	if (recurse_submodules != RECURSE_SUBMODULES_OFF) {
-		load_submodule_config();
-		if (recurse_submodules != RECURSE_SUBMODULES_DEFAULT)
-			set_config_update_recurse_submodules(recurse_submodules);
-	}
+	if (recurse_submodules != RECURSE_SUBMODULES_DEFAULT)
+		set_config_update_recurse_submodules(recurse_submodules);
 
 	if ((!!opts.new_branch + !!opts.new_branch_force + !!opts.new_orphan_branch) > 1)
 		die(_("-b, -B and --orphan are mutually exclusive"));
