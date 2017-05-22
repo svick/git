@@ -33,6 +33,24 @@ test_expect_success 'grep correctly finds patterns in a submodule' '
 	test_cmp expect actual
 '
 
+test_expect_success 'grep finds patterns in a submodule via config' '
+	test_config submodule.recurse true &&
+	# expect from previous test
+	git grep -e "bar" >actual &&
+	test_cmp expect actual
+'
+
+test_expect_success 'grep --no-recurse-submodules overrides config' '
+	test_config submodule.recurse true &&
+	cat >expect <<-\EOF &&
+	a:foobar
+	b/b:bar
+	EOF
+
+	git grep -e "bar" --no-recurse-submodules >actual &&
+	test_cmp expect actual
+'
+
 test_expect_success 'grep and basic pathspecs' '
 	cat >expect <<-\EOF &&
 	submodule/a:foobar
