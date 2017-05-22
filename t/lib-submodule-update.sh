@@ -782,7 +782,8 @@ test_submodule_forced_switch () {
 #   git directory first into the superproject.
 
 test_submodule_switch_recursing () {
-	command="$1"
+	cmd_args="$1"
+	command="git $cmd_args --recurse-submodules"
 	RESULTDS=success
 	if test "$KNOWN_FAILURE_DIRECTORY_SUBMODULE_CONFLICTS" = 1
 	then
@@ -1022,7 +1023,8 @@ test_submodule_switch_recursing () {
 # that change a submodule, but throwing away local changes in
 # the superproject as well as the submodule is allowed.
 test_submodule_forced_switch_recursing () {
-	command="$1"
+	cmd_args="$1"
+	command="git $cmd_args --recurse-submodules"
 	RESULT=success
 	if test "$KNOWN_FAILURE_DIRECTORY_SUBMODULE_CONFLICTS" = 1
 	then
