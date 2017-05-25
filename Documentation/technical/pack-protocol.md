@@ -64,9 +64,11 @@ option to git daemon, with the %H/%CH format characters.
 Basically what the Git client is doing to connect to an 'upload-pack'
 process on the server side over the Git protocol is this:
 
+```
    $ echo -e -n \
      "0039git-upload-pack /schacon/gitbook.git\0host=example.com\0" |
      nc -v example.com 9418
+```
 
 If the server refuses the request for some reasons, it could abort
 gracefully with an error message.
@@ -83,7 +85,9 @@ Initiating the upload-pack or receive-pack processes over SSH is
 executing the binary on the server via SSH remote execution.
 It is basically equivalent to running this:
 
+```
    $ ssh git.example.com "git-upload-pack '/project.git'"
+```
 
 For a server to support Git pushing and pulling for a given user over
 SSH, that user needs to be able to execute one or both of those
@@ -140,6 +144,7 @@ When the client initially connects the server will immediately respond
 with a listing of each reference it has (all branches and tags) along
 with the object name that each reference currently points to.
 
+```
    $ echo -e -n "0039git-upload-pack /schacon/gitbook.git\0host=example.com\0" |
       nc -v example.com 9418
    00887217a7c7e582c46cec22a130adf4b9d7d950fba0 HEAD\0multi_ack thin-pack
@@ -150,6 +155,7 @@ with the object name that each reference currently points to.
    003c525128480b96c89e6418b1e40909bf6c5b2d580f refs/tags/v1.0
    003fe92df48743b7bc7d26bcaabfddde0a1e20cae47c refs/tags/v1.0^{}
    0000
+```
 
 The returned response is a pkt-line stream describing each ref and
 its current value.  The stream MUST be sorted by name according to
