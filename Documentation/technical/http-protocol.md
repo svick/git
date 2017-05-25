@@ -18,7 +18,9 @@ URL Format
 URLs for Git repositories accessed by HTTP use the standard HTTP
 URL syntax documented by RFC 1738, so they are of the form:
 
+```
   http://<host>:<port>/<path>?<searchpart>
+```
 
 Within this documentation the placeholder `$GIT_URL` will stand for
 the http:// repository URL entered by the end-user.
