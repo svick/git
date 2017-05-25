@@ -30,18 +30,23 @@ supplied `$GIT_URL` string.
 
 An example of a dumb client requesting for a loose object:
 
+```
   $GIT_URL:     http://example.com:8080/git/repo.git
   URL request:  http://example.com:8080/git/repo.git/objects/d0/49f6c27a2244e12041955e262a404c7faba355
+```
 
 An example of a smart request to a catch-all gateway:
 
+```
   $GIT_URL:     http://example.com/daemon.cgi?svc=git&q=
   URL request:  http://example.com/daemon.cgi?svc=git&q=/info/refs&service=git-receive-pack
-
+```
 An example of a request to a submodule:
 
+```
   $GIT_URL:     http://example.com/git/repo.git/path/submodule.git
   URL request:  http://example.com/git/repo.git/path/submodule.git/info/refs
+```
 
 Clients MUST strip a trailing `/`, if present, from the user supplied
 `$GIT_URL` string to prevent empty path tokens (`//`) from appearing
@@ -151,6 +156,7 @@ the repository.
 Dumb HTTP clients MUST make a `GET` request to `$GIT_URL/info/refs`,
 without any search/query parameters.
 
+```
    C: GET $GIT_URL/info/refs HTTP/1.0
 
    S: 200 OK
@@ -159,6 +165,7 @@ without any search/query parameters.
    S: d049f6c27a2244e12041955e262a404c7faba355	refs/heads/master
    S: 2cb58b79488a98d2721cea644875a8dd0026b115	refs/tags/v1.0
    S: a3c2e2402b99163d1d59756e5f207ae21cccba4c	refs/tags/v1.0^{}
+```
 
 The Content-Type of the returned info/refs entity SHOULD be
 `text/plain; charset=utf-8`, but MAY be any content type.
@@ -177,12 +184,14 @@ each ref and its known value.  The file SHOULD be sorted by name
 according to the C locale ordering.  The file SHOULD NOT include
 the default ref named `HEAD`.
 
+```
   info_refs   =  *( ref_record )
   ref_record  =  any_ref / peeled_ref
 
   any_ref     =  obj-id HTAB refname LF
   peeled_ref  =  obj-id HTAB refname LF
 		 obj-id HTAB refname "^{}" LF
+```
 
 Smart Clients
 ~~~~~~~~~~~~~
@@ -196,19 +205,24 @@ The request MUST contain exactly one query parameter,
 name the client wishes to contact to complete the operation.
 The request MUST NOT contain additional query parameters.
 
+```
    C: GET $GIT_URL/info/refs?service=git-upload-pack HTTP/1.0
+```
 
 dumb server reply:
 
+```
    S: 200 OK
    S:
    S: 95dcfa3633004da0049d3d0fa03f80589cbcaf31	refs/heads/maint
    S: d049f6c27a2244e12041955e262a404c7faba355	refs/heads/master
    S: 2cb58b79488a98d2721cea644875a8dd0026b115	refs/tags/v1.0
    S: a3c2e2402b99163d1d59756e5f207ae21cccba4c	refs/tags/v1.0^{}
+```
 
 smart server reply:
 
+```
    S: 200 OK
    S: Content-Type: application/x-git-upload-pack-advertisement
    S: Cache-Control: no-cache
@@ -218,6 +232,7 @@ smart server reply:
    S: 0042d049f6c27a2244e12041955e262a404c7faba355 refs/heads/master\n
    S: 003c2cb58b79488a98d2721cea644875a8dd0026b115 refs/tags/v1.0\n
    S: 003fa3c2e2402b99163d1d59756e5f207ae21cccba4c refs/tags/v1.0^{}\n
+```
 
 Dumb Server Response
 ^^^^^^^^^^^^^^^^^^^^
@@ -269,6 +284,7 @@ the C locale ordering.  The stream SHOULD include the default ref
 named `HEAD` as the first ref.  The stream MUST include capability
 declarations behind a NUL on the first ref.
 
+```
   smart_reply     =  PKT-LINE("# service=$servicename" LF)
 		     ref_list
 		     "0000"
@@ -287,7 +303,7 @@ declarations behind a NUL on the first ref.
   any_ref         =  PKT-LINE(obj-id SP name LF)
   peeled_ref      =  PKT-LINE(obj-id SP name LF)
 		     PKT-LINE(obj-id SP name "^{}" LF
-
+```
 
 Smart Service git-upload-pack
 ------------------------------
@@ -296,6 +312,7 @@ This service reads from the repository pointed to by `$GIT_URL`.
 Clients MUST first perform ref discovery with
 `$GIT_URL/info/refs?service=git-upload-pack`.
 
+```
    C: POST $GIT_URL/git-upload-pack HTTP/1.0
    C: Content-Type: application/x-git-upload-pack-request
    C:
@@ -309,6 +326,7 @@ Clients MUST first perform ref discovery with
    S:
    S: ....ACK %s, continue
    S: ....NAK
+```
 
 Clients MUST NOT reuse or revalidate a cached response.
 Servers MUST include sufficient Cache-Control headers
@@ -322,6 +340,7 @@ appear in the response obtained through ref discovery unless the
 server advertises capability `allow-tip-sha1-in-want` or
 `allow-reachable-sha1-in-want`.
 
+```
   compute_request   =  want_list
 		       have_list
 		       request_end
@@ -334,6 +353,7 @@ server advertises capability `allow-tip-sha1-in-want` or
   cap_list          =  *(SP capability) SP
 
   have_list         =  *PKT-LINE("have" SP id LF)
+```
 
 TODO: Document this further.
 
@@ -363,6 +383,7 @@ C: Start a queue, `c_pending`, ordered by commit time (popping newest
 
 C: Send one `$GIT_URL/git-upload-pack` request:
 
+```
    C: 0032want <want #1>...............................
    C: 0032want <want #2>...............................
    ....
@@ -373,6 +394,7 @@ C: Send one `$GIT_URL/git-upload-pack` request:
    C: 0032have <have #2>...............................
    ....
    C: 0000
+```
 
 The stream is organized into "commands", with each command
 appearing by itself in a pkt-line.  Within a command line,
@@ -401,7 +423,9 @@ received one of those back from `s_common`, or the client has
 emptied `c_pending` it SHOULD include a "done" command to let
 the server know it won't proceed:
 
+```
    C: 0009done
+```
 
 S: Parse the git-upload-pack request:
 
@@ -432,7 +456,9 @@ If the server has found a closed set of objects to pack or the
 request ends with "done", it replies with the pack.
 TODO: Document the pack based response
 
+```
    S: PACK...
+```
 
 The returned stream is the side-band-64k protocol supported
 by the git-upload-pack service, and the pack is embedded into
@@ -459,6 +485,7 @@ This service reads from the repository pointed to by `$GIT_URL`.
 Clients MUST first perform ref discovery with
 `$GIT_URL/info/refs?service=git-receive-pack`.
 
+```
    C: POST $GIT_URL/git-receive-pack HTTP/1.0
    C: Content-Type: application/x-git-receive-pack-request
    C:
@@ -471,6 +498,7 @@ Clients MUST first perform ref discovery with
    S: Cache-Control: no-cache
    S:
    S: ....
+```
 
 Clients MUST NOT reuse or revalidate a cached response.
 Servers MUST include sufficient Cache-Control headers
@@ -482,6 +510,7 @@ Clients MUST send at least one command in the request body.
 Within the command portion of the request body clients SHOULD send
 the id obtained through ref discovery as old_id.
 
+```
   update_request  =  command_list
 		     "PACK" <binary data>
 
@@ -494,6 +523,7 @@ the id obtained through ref discovery as old_id.
   create          =  zero-id SP new_id SP name
   delete          =  old_id SP zero-id SP name
   update          =  old_id SP new_id SP name
+```
 
 TODO: Document this further.
 
