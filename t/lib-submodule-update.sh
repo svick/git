@@ -782,7 +782,8 @@ test_submodule_forced_switch () {
 #   git directory first into the superproject.
 
 test_submodule_switch_recursing () {
-	command="$1"
+	cmd_args="$1"
+	command="git $cmd_args --recurse-submodules"
 	RESULTDS=success
 	if test "$KNOWN_FAILURE_DIRECTORY_SUBMODULE_CONFLICTS" = 1
 	then
@@ -984,6 +985,18 @@ test_submodule_switch_recursing () {
 		)
 	'
 
+	test_expect_success "git -c submodule.recurse=true $cmd_args --recurse-submodules: modified submodule updates submodule work tree" '
+		prolog &&
+		reset_work_tree_to_interested add_sub1 &&
+		(
+			cd submodule_update &&
+			git branch -t modify_sub1 origin/modify_sub1 &&
+			git -c submodule.recurse=true $cmd_args --recurse-submodules modify_sub1 &&
+			test_superproject_content origin/modify_sub1 &&
+			test_submodule_content sub1 origin/modify_sub1
+		)
+	'
+
 	# Updating a submodule to an invalid sha1 doesn't update the
 	# superproject nor the submodule's work tree.
 	test_expect_success "$command: updating to a missing submodule commit fails" '
@@ -1017,7 +1030,8 @@ test_submodule_switch_recursing () {
 # that change a submodule, but throwing away local changes in
 # the superproject as well as the submodule is allowed.
 test_submodule_forced_switch_recursing () {
-	command="$1"
+	cmd_args="$1"
+	command="git $cmd_args --recurse-submodules"
 	RESULT=success
 	if test "$KNOWN_FAILURE_DIRECTORY_SUBMODULE_CONFLICTS" = 1
 	then

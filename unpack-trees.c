@@ -291,8 +291,7 @@ static void reload_gitmodules_file(struct index_state *index,
 			else if (r == 0) {
 				submodule_free();
 				checkout_entry(ce, state, NULL);
-				gitmodules_config();
-				git_config(submodule_config, NULL);
+				load_submodule_config();
 			} else
 				break;
 		}
