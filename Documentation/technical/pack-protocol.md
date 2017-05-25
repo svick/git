@@ -48,13 +48,13 @@ hostname parameter, terminated by a NUL byte.
 
    0032git-upload-pack /project.git\0host=myserver.com\0
 
---
+```
    git-proto-request = request-command SP pathname NUL [ host-parameter NUL ]
    request-command   = "git-upload-pack" / "git-receive-pack" /
 		       "git-upload-archive"   ; case sensitive
    pathname          = *( %x01-ff ) ; exclude NUL
    host-parameter    = "host=" hostname [ ":" port ]
---
+```
 
 Only host-parameter is allowed in the git-proto-request. Clients
 MUST NOT attempt to send additional parameters. It is used for the
@@ -71,9 +71,9 @@ process on the server side over the Git protocol is this:
 If the server refuses the request for some reasons, it could abort
 gracefully with an error message.
 
-----
+```
   error-line     =  PKT-LINE("ERR" SP explanation-text)
-----
+```
 
 
 SSH Transport
@@ -164,7 +164,7 @@ first ref. The peeled value of a ref (that is "ref^{}") MUST be
 immediately after the ref itself, if presented. A conforming server
 MUST peel the ref if it's an annotated tag.
 
-----
+```
   advertised-refs  =  (no-refs / list-of-refs)
 		      *shallow
 		      flush-pkt
@@ -185,7 +185,7 @@ MUST peel the ref if it's an annotated tag.
   capability-list  =  capability *(SP capability)
   capability       =  1*(LC_ALPHA / DIGIT / "-" / "_")
   LC_ALPHA         =  %x61-7A
-----
+```
 
 Server and client MUST use lowercase for obj-id, both MUST treat obj-id
 as case-insensitive.
@@ -208,7 +208,7 @@ by telling the server what objects it wants, its shallow objects
 will also send a list of the capabilities it wants to be in effect,
 out of what the server said it could do with the first 'want' line.
 
-----
+```
   upload-request    =  want-list
 		       *shallow-line
 		       *1depth-request
@@ -227,7 +227,7 @@ out of what the server said it could do with the first 'want' line.
   additional-want   =  PKT-LINE("want" SP obj-id)
 
   depth             =  1*DIGIT
-----
+```
 
 Clients MUST send all the obj-ids it wants from the reference
 discovery phase as 'want' lines. Clients MUST send at least one
@@ -258,7 +258,7 @@ will determine which commits will and will not be shallow and
 send this information to the client. If the client did not request
 a positive depth, this step is skipped.
 
-----
+```
   shallow-update   =  *shallow-line
 		      *unshallow-line
 		      flush-pkt
@@ -266,7 +266,7 @@ a positive depth, this step is skipped.
   shallow-line     =  PKT-LINE("shallow" SP obj-id)
 
   unshallow-line   =  PKT-LINE("unshallow" SP obj-id)
-----
+```
 
 If the client has requested a positive depth, the server will compute
 the set of commits which are no deeper than the desired depth. The set
@@ -286,14 +286,14 @@ will send up to 32 of these at a time, then will send a flush-pkt. The
 canonical implementation will skip ahead and send the next 32 immediately,
 so that there is always a block of 32 "in-flight on the wire" at a time.
 
-----
+```
   upload-haves      =  have-list
 		       compute-end
 
   have-list         =  *have-line
   have-line         =  PKT-LINE("have" SP obj-id)
   compute-end       =  flush-pkt / PKT-LINE("done")
-----
+```
 
 If the server reads 'have' lines, it then will respond by ACKing any
 of the obj-ids the client said it had that the server also has. The
@@ -357,18 +357,18 @@ from the client).
 
 Then the server will start sending its packfile data.
 
-----
+```
   server-response = *ack_multi ack / nak / error-line
   ack_multi       = PKT-LINE("ACK" SP obj-id ack_status)
   ack_status      = "continue" / "common" / "ready"
   ack             = PKT-LINE("ACK" SP obj-id)
   nak             = PKT-LINE("NAK")
   error-line     =  PKT-LINE("ERR" SP explanation-text)
-----
+```
 
 A simple clone may look like this (with no 'have' lines):
 
-----
+```
    C: 0054want 74730d410fcb6603ace96f1dc55ea6196122532d multi_ack \
      side-band-64k ofs-delta\n
    C: 0032want 7d1665144a3a975c05f1f43902ddaf084e784dbe\n
@@ -380,11 +380,11 @@ A simple clone may look like this (with no 'have' lines):
 
    S: 0008NAK\n
    S: [PACKFILE]
-----
+```
 
 An incremental update (fetch) response might look like this:
 
-----
+```
    C: 0054want 74730d410fcb6603ace96f1dc55ea6196122532d multi_ack \
      side-band-64k ofs-delta\n
    C: 0032want 7d1665144a3a975c05f1f43902ddaf084e784dbe\n
@@ -403,7 +403,7 @@ An incremental update (fetch) response might look like this:
 
    S: 0031ACK 74730d410fcb6603ace96f1dc55ea6196122532d\n
    S: [PACKFILE]
-----
+```
 
 
 Packfile Data
@@ -475,7 +475,7 @@ of the reference.
 
 This list is followed by a flush-pkt.
 
-----
+```
   update-requests   =  *shallow ( command-list | push-cert )
 
   shallow           =  PKT-LINE("shallow" SP obj-id)
@@ -504,15 +504,15 @@ This list is followed by a flush-pkt.
 		      PKT-LINE("push-cert-end" LF)
 
   push-option       =  1*( VCHAR | SP )
-----
+```
 
 If the server has advertised the 'push-options' capability and the client has
 specified 'push-options' as part of the capability list above, the client then
 sends its push options followed by a flush-pkt.
 
-----
+```
   push-options      =  *PKT-LINE(push-option) flush-pkt
-----
+```
 
 For backwards compatibility with older Git servers, if the client sends a push
 cert and push options, it MUST send its push options both embedded within the
@@ -524,9 +524,9 @@ After that the packfile that
 should contain all the objects that the server will need to complete the new
 references will be sent.
 
-----
+```
   packfile          =  "PACK" 28*(OCTET)
-----
+```
 
 If the receiving end does not support delete-refs, the sending end MUST
 NOT ask for delete command.
@@ -590,7 +590,7 @@ list the status of the packfile unpacking as either 'unpack ok' or
 that it tried to update.  Each line is either 'ok [refname]' if the
 update was successful, or 'ng [refname] [error]' if the update was not.
 
-----
+```
   report-status     = unpack-status
 		      1*(command-status)
 		      flush-pkt
@@ -603,7 +603,7 @@ update was successful, or 'ng [refname] [error]' if the update was not.
   command-fail      = PKT-LINE("ng" SP refname SP error-msg)
 
   error-msg         = 1*(OCTECT) ; where not "ok"
-----
+```
 
 Updates can be unsuccessful for a number of reasons.  The reference can have
 changed since the reference discovery phase was originally sent, meaning
@@ -614,7 +614,7 @@ can be rejected.
 
 An example client/server communication might look like this:
 
-----
+```
    S: 007c74730d410fcb6603ace96f1dc55ea6196122532d refs/heads/local\0report-status delete-refs ofs-delta\n
    S: 003e7d1665144a3a975c05f1f43902ddaf084e784dbe refs/heads/debug\n
    S: 003f74730d410fcb6603ace96f1dc55ea6196122532d refs/heads/master\n
@@ -629,4 +629,4 @@ An example client/server communication might look like this:
    S: 000eunpack ok\n
    S: 0018ok refs/heads/debug\n
    S: 002ang refs/heads/master non-fast-forward\n
-----
+```
