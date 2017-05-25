@@ -148,8 +148,7 @@ Discovering References
 All HTTP clients MUST begin either a fetch or a push exchange by
 discovering the references available on the remote repository.
 
-Dumb Clients
-~~~~~~~~~~~~
+### Dumb Clients
 
 HTTP clients that only support the "dumb" protocol MUST discover
 references by making a request for the special info/refs file of
@@ -195,8 +194,7 @@ the default ref named `HEAD`.
 		 obj-id HTAB refname "^{}" LF
 ```
 
-Smart Clients
-~~~~~~~~~~~~~
+### Smart Clients
 
 HTTP clients that support the "smart" protocol (or both the
 "smart" and "dumb" protocols) MUST discover references by making
@@ -236,15 +234,15 @@ smart server reply:
    S: 003fa3c2e2402b99163d1d59756e5f207ae21cccba4c refs/tags/v1.0^{}\n
 ```
 
-Dumb Server Response
-^^^^^^^^^^^^^^^^^^^^
+#### Dumb Server Response
+
 Dumb servers MUST respond with the dumb server reply format.
 
 See the prior section under dumb clients for a more detailed
 description of the dumb server response.
 
-Smart Server Response
-^^^^^^^^^^^^^^^^^^^^^
+#### Smart Server Response
+
 If the server does not recognize the requested service name, or the
 requested service name has been disabled by the server administrator,
 the server MUST respond with the `403 Forbidden` HTTP status code.
@@ -309,6 +307,7 @@ declarations behind a NUL on the first ref.
 
 Smart Service git-upload-pack
 ------------------------------
+
 This service reads from the repository pointed to by `$GIT_URL`.
 
 Clients MUST first perform ref discovery with
@@ -359,8 +358,8 @@ server advertises capability `allow-tip-sha1-in-want` or
 
 TODO: Document this further.
 
-The Negotiation Algorithm
-~~~~~~~~~~~~~~~~~~~~~~~~~
+### The Negotiation Algorithm
+
 The computation to select the minimal pack proceeds as follows
 (C = client, S = server):
 
